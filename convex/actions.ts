@@ -3,7 +3,7 @@
 // has an error
 
 import { fetchMutation } from "convex/nextjs";
-import { api } from "../convex/_generated/api";
+import { api } from "./_generated/api";
 import { getToken } from "../src/lib/auth-server";
 
 // Authenticated mutation via server function
@@ -16,7 +16,7 @@ export async function updatePassword({
 }) {
   const token = await getToken();
   await fetchMutation(
-    api.users.updatePassword,
+    api.users.updateUserPassword,
     { currentPassword, newPassword },
     { token }
   );
