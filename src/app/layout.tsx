@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ConvexClientProvider } from "./ConvexClientProvider";
 import ThemeProvider from "@/components/ThemeProvider";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Toaster } from "sonner";
@@ -34,7 +35,7 @@ export default function RootLayout({
               <ThemeToggle />
             </div>
             <Toaster position="top-center" />
-            {children}
+            <ConvexClientProvider>{children}</ConvexClientProvider>
           </div>
         </ThemeProvider>
       </body>
