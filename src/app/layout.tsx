@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import ThemeProvider from "@/components/ThemeProvider";
-import ThemeToggle from "@/components/ThemeToggle";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -19,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Nexum Chat",
   description: "a realtime chat app, join in seconds.",
+  icons: {
+    icon: "/nexum-chat.svg",
+  },
 };
 
 export default function RootLayout({
@@ -31,9 +33,6 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
           <div className="min-h-screen relative">
-            <div className="absolute top-4 right-4 z-50">
-              <ThemeToggle />
-            </div>
             <Toaster position="top-center" />
             <ConvexClientProvider>{children}</ConvexClientProvider>
           </div>
