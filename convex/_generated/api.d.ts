@@ -9,8 +9,10 @@
  */
 
 import type * as actions from "../actions.js";
+import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
+import type * as userProfiles from "../userProfiles.js";
 import type * as users from "../users.js";
 
 import type {
@@ -29,8 +31,10 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   actions: typeof actions;
+  admin: typeof admin;
   auth: typeof auth;
   http: typeof http;
+  userProfiles: typeof userProfiles;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
