@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MessageSquare, Users, Zap, Shield, Sparkles, ArrowRight } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
             <span className="font-bold text-xl bg-linear-to-r from-cyan-600 to-violet-600 bg-clip-text text-transparent">Nexum</span>
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Link href="/login">
               <Button variant="ghost" className="hover:text-cyan-600">Sign In</Button>
             </Link>
