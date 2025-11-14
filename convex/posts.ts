@@ -81,7 +81,25 @@ export const deletePost = mutation({
     if (!post) throw new Error("Post not found");
     if (post.userId !== currentUser._id) throw new Error("Not authorized to delete this post");
 
+    // Delete all likes on this post
+    const likes = await ctx.db
+      .query("likes")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    
+    await Promise.all(likes.map((like) => ctx.db.delete(like._id)));
+
+    // Delete all comments on this post
+    const comments = await ctx.db
+      .query("comments")
+      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .collect();
+    
+    await Promise.all(comments.map((comment) => ctx.db.delete(comment._id)));
+
+    // Finally, delete the post itself
     await ctx.db.delete(args.postId);
+    
     return { success: true };
   },
 });
