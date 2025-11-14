@@ -99,7 +99,7 @@ export default defineSchema({
   posts: defineTable({
     userId: v.string(), 
     content: v.string(), 
-    images: v.optional(v.array(v.string())), 
+    image: v.optional(v.string()), 
     createdAt: v.number(), 
     updatedAt: v.optional(v.number()),
     isDeleted: v.optional(v.boolean()),
@@ -108,15 +108,18 @@ export default defineSchema({
     .index("by_created_at", ["createdAt"])
     .index("by_user_and_created", ["userId", "createdAt"]),
 
-  // Likes on posts
+  // Likes on posts and comments
   likes: defineTable({
     userId: v.string(), // User who liked
-    postId: v.id("posts"), // Post that was liked
+    postId: v.optional(v.id("posts")), // Post that was liked (if liking a post)
+    commentId: v.optional(v.id("comments")), // Comment that was liked (if liking a comment)
     createdAt: v.number(),
   })
     .index("by_post", ["postId"])
+    .index("by_comment", ["commentId"])
     .index("by_user", ["userId"])
-    .index("by_post_and_user", ["postId", "userId"]), // Prevent duplicate likes
+    .index("by_post_and_user", ["postId", "userId"]) // Prevent duplicate likes on posts
+    .index("by_comment_and_user", ["commentId", "userId"]), // Prevent duplicate likes on comments
 
   comments: defineTable({
     userId: v.string(),
