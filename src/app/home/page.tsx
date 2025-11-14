@@ -9,11 +9,16 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { RightSidebar } from "./_components/RightSidebar";
+import { UsernameSetupDialog } from "./_components/UsernameSetupDialog";
 
 export default function HomePage() {
   const currentUser = useQuery(api.auth.getCurrentUser);
+  const myProfile = useQuery(api.userProfiles.getMyProfile);
+  
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  
+  const showUsernameDialog = myProfile !== undefined && !myProfile?.username;
 
   useEffect(() => {
     if (currentUser === null) {
@@ -37,9 +42,16 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)]">
-      {/* Main Content - Centered */}
-      <div className="flex-1 flex justify-center overflow-y-auto">
+    <>
+      {/* Username Setup Dialog */}
+      <UsernameSetupDialog 
+        open={showUsernameDialog} 
+        onClose={() => {}} 
+      />
+
+      <div className="flex h-[calc(100vh-4rem)]">
+        {/* Main Content - Centered */}
+        <div className="flex-1 flex justify-center overflow-y-auto">
         <div className="w-full max-w-4xl px-4 py-6 space-y-6">
           <div>
             <h1 className="text-3xl font-bold">Welcome back, {currentUser.name || currentUser.email}! 👋</h1>
@@ -86,11 +98,12 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Right Sidebar - Desktop Only */}
-      <aside className="hidden lg:block w-80 border-l h-full">
-        <RightSidebar />
-      </aside>
-    </div>
+        {/* Right Sidebar - Desktop Only */}
+        <aside className="hidden lg:block w-80 border-l h-full">
+          <RightSidebar />
+        </aside>
+      </div>
+    </>
   );
 }
 

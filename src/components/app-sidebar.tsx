@@ -56,6 +56,7 @@ const items = [
 
 export function AppSidebar() {
   const currentUser = useQuery(api.auth.getCurrentUser);
+  const myProfile = useQuery(api.userProfiles.getMyProfile);
 
   return (
     <Sidebar>
@@ -102,7 +103,7 @@ export function AppSidebar() {
           ) : currentUser ? (
             // User logged in - clickable profile link
             <Link
-              href={`/profile/${currentUser._id}`} 
+              href={myProfile?.username ? `/home/profile/${myProfile.username}` : `/home/profile/${currentUser._id}`} 
               className="flex items-center gap-3 px-3 py-2 border-t hover:bg-accent transition-colors cursor-pointer rounded-md"
             >
               <Avatar className="h-10 w-10">
