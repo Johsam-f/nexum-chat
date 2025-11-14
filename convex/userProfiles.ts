@@ -268,3 +268,28 @@ export const suggestUsername = query({
     return suggestedUsername;
   },
 });
+
+// get posts liked by user
+export const getLikedPostsByUser = query({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const likes = await ctx.db
+      .query("likes")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    const postLikes = likes.filter((like) => like.postId !== undefined);
+    
+    const posts = await Promise.all(
+      postLikes.map(async (like) => {
+        if (!like.postId) return null;
+        return await ctx.db.get(like.postId);
+      })
+    );
+
+    // Filter out null posts 
+    return posts.filter((post): post is NonNullable<typeof post> => post !== null);
+  },
+});
