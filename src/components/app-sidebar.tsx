@@ -1,8 +1,9 @@
 "use client";
-import { Home, Inbox, Search, Settings, User, Users } from "lucide-react"
+import { Home, MessageCircleMore, Settings, Users, UserSearch, Bell } from "lucide-react"
 import Image from "next/image"
 import { useQuery } from "convex/react"
 import { api } from "../../convex/_generated/api"
+import { usePathname } from "next/navigation"
 
 import {
   Sidebar,
@@ -24,37 +25,43 @@ import ThemeToggle  from "@/components/ThemeToggle"
 const items = [
   {
     title: "Home",
-    url: "home",
+    url: "/home",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
+    title: "Notifications",
+    url: "/home/notifications",
+    icon: Bell,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    title: "Messages",
+    url: "/home/messages",
+    icon: MessageCircleMore,
   },
   {
-    title: "Profile",
-    url: "#",
-    icon: User,
-  },
-  {
-    title: "Find Friends",
-    url: "#",
+    title: "Groups",
+    url: "/home/groups",
     icon: Users,
   },
   {
+    title: "Friends",
+    url: "/home/friends",
+    icon: Users,
+  },
+  {
+    title: "Discover",
+    url: "/home/discover", 
+    icon: UserSearch,
+  },
+  {
     title: "Settings",
-    url: "#",
+    url: "/home/settings",
     icon: Settings,
   },
 ]
 
 export function AppSidebar() {
+  const pathname = usePathname()
   const currentUser = useQuery(api.auth.getCurrentUser);
   const myProfile = useQuery(api.userProfiles.getMyProfile);
 
@@ -69,11 +76,15 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="text-[17px]">
-                    <a href={item.url}>
+                  <SidebarMenuButton 
+                    asChild 
+                    className="text-[17px]"
+                    isActive={pathname === item.url}
+                  >
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -101,7 +112,6 @@ export function AppSidebar() {
               </div>
             </div>
           ) : currentUser ? (
-            // User logged in - clickable profile link
             <Link
               href={myProfile?.username ? `/home/profile/${myProfile.username}` : `/home/profile/${currentUser._id}`} 
               className="flex items-center gap-3 px-3 py-2 border-t hover:bg-accent transition-colors cursor-pointer rounded-md"
