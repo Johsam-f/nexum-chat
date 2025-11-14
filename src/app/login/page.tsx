@@ -18,7 +18,7 @@ export default function LoginPage() {
                 provider: "google",
                 callbackURL: "/home",
             });
-            toast.success("login in Successful! Redirecting...");
+            toast.success("Redirecting...");
             
         } catch (error) {
             console.error("Google login error:", error);
