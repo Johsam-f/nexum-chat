@@ -2,6 +2,15 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
 
+// get posts count
+export const getPostsCount = query({
+  args: {},
+  handler: async (ctx) => {
+    const count = await ctx.db.query("posts").collect().then((posts) => posts.length);
+    return count;
+  },
+});
+
 // get all posts with like and comment counts
 export const getAllPosts = query({
   args: {},
