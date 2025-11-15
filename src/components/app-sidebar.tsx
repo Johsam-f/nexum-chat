@@ -1,5 +1,5 @@
 "use client";
-import { Home, MessageCircleMore, Settings, Users, UserSearch, Bell } from "lucide-react"
+import { Home, MessageCircleMore, Settings, Users, UserSearch, Bell, Shield } from "lucide-react"
 import Image from "next/image"
 import { useQuery } from "convex/react"
 import { api } from "../../convex/_generated/api"
@@ -15,6 +15,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -60,10 +61,23 @@ const items = [
   },
 ]
 
+// Admin menu items
+const adminItems = [
+  {
+    title: "Admin Dashboard",
+    url: "/home/admin",
+    icon: Shield,
+  },
+]
+
 export function AppSidebar() {
   const pathname = usePathname()
   const currentUser = useQuery(api.auth.getCurrentUser);
   const myProfile = useQuery(api.userProfiles.getMyProfile);
+  const myRole = useQuery(api.admin.getMyRole);
+  
+  const isAdmin = myRole === "admin";
+  const isModerator = myRole === "admin" || myRole === "moderator";
 
   return (
     <Sidebar>
@@ -91,6 +105,36 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Admin Section */}
+        {(isAdmin || isModerator) && (
+          <>
+            <SidebarSeparator className="mx-0" />
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-xs uppercase text-muted-foreground">
+                {isAdmin ? "Admin" : "Moderator"}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {adminItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton 
+                        asChild 
+                        className="text-[17px]"
+                        isActive={pathname === item.url}
+                      >
+                        <Link href={item.url}>
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
       </SidebarContent>
       
       <SidebarFooter>
