@@ -26,15 +26,19 @@ export async function isModerator(ctx: QueryCtx | MutationCtx, userId: string): 
 // Get current user's role
 export const getMyRole = query({
   handler: async (ctx) => {
-    const currentUser = await authComponent.getAuthUser(ctx);
-    if (!currentUser) return null;
+    try {
+      const currentUser = await authComponent.getAuthUser(ctx);
+      if (!currentUser) return null;
 
-    const userRole = await ctx.db
-      .query("userRoles")
-      .withIndex("by_user", (q) => q.eq("userId", currentUser._id))
-      .first();
+      const userRole = await ctx.db
+        .query("userRoles")
+        .withIndex("by_user", (q) => q.eq("userId", currentUser._id))
+        .first();
 
-    return userRole?.role || "user";
+      return userRole?.role || "user";
+    } catch {
+      return null;
+    }
   },
 });
 

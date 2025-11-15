@@ -133,15 +133,19 @@ export const getProfileByUsername = query({
 // Get current user's profile
 export const getMyProfile = query({
   handler: async (ctx) => {
-    const currentUser = await authComponent.getAuthUser(ctx);
-    if (!currentUser) return null;
+    try {
+      const currentUser = await authComponent.getAuthUser(ctx);
+      if (!currentUser) return null;
 
-    const profile = await ctx.db
-      .query("userProfiles")
-      .withIndex("by_user", (q) => q.eq("userId", currentUser._id))
-      .first();
+      const profile = await ctx.db
+        .query("userProfiles")
+        .withIndex("by_user", (q) => q.eq("userId", currentUser._id))
+        .first();
 
-    return profile;
+      return profile;
+    } catch {
+      return null;
+    }
   },
 });
 
