@@ -6,7 +6,7 @@ import { Settings } from "lucide-react";
 import { AccountInformation } from "./_components/AccountInformation";
 import { PrivacySettings } from "./_components/PrivacySettings";
 import { NotificationSettings } from "./_components/NotificationSettings";
-import { DangerZone } from "./_components/DangerZone";
+import { DangerZone } from "./_components/dangerzone/DangerZone";
 import { AccountInfo } from "./_components/AccountInfo";
 import { AboutDev } from "./_components/AboutDev";
 
