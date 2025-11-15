@@ -249,6 +249,90 @@ export const searchUsersByUsername = query({
   },
 });
 
+// Search users for discovery page
+export const searchUsersForDiscovery = query({
+  args: {
+    query: v.optional(v.string()),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const searchTerm = args.query?.toLowerCase().trim() || "";
+    const limit = args.limit || 20;
+
+    try {
+      const currentUser = await authComponent.getAuthUser(ctx);
+      
+      // Get profiles based on search
+      let profiles;
+      if (searchTerm) {
+        // Search by username
+        const allProfiles = await ctx.db.query("userProfiles").collect();
+        profiles = allProfiles
+          .filter((profile) => profile.username.includes(searchTerm))
+          .slice(0, limit);
+      } else {
+        // Get recent users if no search term
+        profiles = await ctx.db
+          .query("userProfiles")
+          .order("desc")
+          .take(limit);
+      }
+
+      // Get user details for each profile
+      const usersWithDetails = await Promise.all(
+        profiles.map(async (profile) => {
+          const user = await authComponent.getAnyUserById(ctx, profile.userId);
+          
+          return {
+            userId: profile.userId,
+            username: profile.username,
+            image: user?.image,
+            isVerified: profile.isVerified || false,
+            // Exclude current user from results
+            isCurrentUser: currentUser ? profile.userId === currentUser._id : false,
+          };
+        })
+      );
+
+      // Filter out current user
+      return usersWithDetails.filter(user => !user.isCurrentUser);
+    } catch {
+      // If not authenticated, return public profiles only
+      let profiles;
+      if (searchTerm) {
+        const allProfiles = await ctx.db.query("userProfiles").collect();
+        profiles = allProfiles
+          .filter((profile) => 
+            profile.username.includes(searchTerm) &&
+            !profile.isPrivate
+          )
+          .slice(0, limit);
+      } else {
+        profiles = await ctx.db
+          .query("userProfiles")
+          .order("desc")
+          .take(limit);
+      }
+
+      const usersWithDetails = await Promise.all(
+        profiles.map(async (profile) => {
+          const user = await authComponent.getAnyUserById(ctx, profile.userId);
+          
+          return {
+            userId: profile.userId,
+            username: profile.username,
+            image: user?.image,
+            isVerified: profile.isVerified || false,
+            isCurrentUser: false,
+          };
+        })
+      );
+
+      return usersWithDetails;
+    }
+  },
+});
+
 // Initialize profile for new users
 export const initializeProfile = mutation({
   args: {
