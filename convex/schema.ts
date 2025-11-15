@@ -12,6 +12,7 @@ export default defineSchema({
     birthday: v.optional(v.number()), 
     isPrivate: v.optional(v.boolean()), 
     isVerified: v.optional(v.boolean()),
+    lastUsernameChange: v.optional(v.number()), // Timestamp of last username change
     createdAt: v.number(),
     updatedAt: v.optional(v.number()),
   })
