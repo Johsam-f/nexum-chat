@@ -96,6 +96,86 @@ export const updateProfile = mutation({
   },
 });
 
+// Update username with 30-day cooldown
+export const updateUsername = mutation({
+  args: {
+    newUsername: v.string(),
+  },
+  handler: async (ctx, args) => {
+    try {
+      const currentUser = await authComponent.getAuthUser(ctx);
+      if (!currentUser) {
+        throw new Error("Not authenticated");
+      }
+
+      // Get current profile
+      const profile = await ctx.db
+        .query("userProfiles")
+        .withIndex("by_user", (q) => q.eq("userId", currentUser._id))
+        .first();
+
+      if (!profile) {
+        throw new Error("Profile not found");
+      }
+
+      // Validate username format
+      const normalizedUsername = args.newUsername.toLowerCase().trim();
+      
+      // Username validation rules
+      if (normalizedUsername.length < 3 || normalizedUsername.length > 20) {
+        throw new Error("Username must be between 3 and 20 characters");
+      }
+
+      if (!/^[a-z0-9_]+$/.test(normalizedUsername)) {
+        throw new Error("Username can only contain lowercase letters, numbers, and underscores");
+      }
+
+      if (normalizedUsername === profile.username) {
+        throw new Error("New username must be different from current username");
+      }
+
+      // Check if username is already taken
+      const existingProfile = await ctx.db
+        .query("userProfiles")
+        .withIndex("by_username", (q) => q.eq("username", normalizedUsername))
+        .first();
+
+      if (existingProfile) {
+        throw new Error("Username is already taken");
+      }
+
+      // Check 30-day cooldown
+      const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+      const now = Date.now();
+
+      if (profile.lastUsernameChange) {
+        const timeSinceLastChange = now - profile.lastUsernameChange;
+        if (timeSinceLastChange < THIRTY_DAYS_MS) {
+          const daysRemaining = Math.ceil((THIRTY_DAYS_MS - timeSinceLastChange) / (24 * 60 * 60 * 1000));
+          throw new Error(`You can change your username again in ${daysRemaining} day${daysRemaining > 1 ? 's' : ''}`);
+        }
+      }
+
+      // Update username
+      await ctx.db.patch(profile._id, {
+        username: normalizedUsername,
+        lastUsernameChange: now,
+        updatedAt: now,
+      });
+
+      return { 
+        success: true, 
+        newUsername: normalizedUsername 
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error("Failed to update username");
+    }
+  },
+});
+
 // Get user profile by userId
 export const getProfile = query({
   args: {
