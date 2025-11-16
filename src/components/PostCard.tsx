@@ -136,7 +136,7 @@ export function PostCard({ post, showAuthor = true, onDelete }: PostCardProps) {
       )}
 
       {/* Post Content */}
-      <div className="space-y-4">
+      <Link href={`/home/post/${post._id}`} className="space-y-4">
         <p className="whitespace-pre-wrap text-foreground leading-relaxed">
           {post.content}
         </p>
@@ -153,7 +153,7 @@ export function PostCard({ post, showAuthor = true, onDelete }: PostCardProps) {
             />
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Post Actions */}
       <div className="flex items-center gap-1 mt-4 pt-4 border-t">
@@ -169,12 +169,14 @@ export function PostCard({ post, showAuthor = true, onDelete }: PostCardProps) {
           />
           <span className="text-sm">{post.likeCount || 0}</span>
         </Button>
-        
-        <Button variant="ghost" size="sm">
-          <MessageCircle className="h-4 w-4 mr-2" />
-          <span className="text-sm">{post.commentCount || 0}</span>
-        </Button>
-        
+
+        <Link href={`/home/post/${post._id}`}>
+          <Button variant="ghost" size="sm">
+            <MessageCircle className="h-4 w-4 mr-2" />
+            <span className="text-sm">{post.commentCount || 0}</span>
+          </Button>
+        </Link>
+
         <Button variant="ghost" size="sm" className="ml-auto">
           <Share2 className="h-4 w-4 mr-2" />
           <span className="text-sm">Share</span>
