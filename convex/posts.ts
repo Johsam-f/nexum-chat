@@ -52,6 +52,7 @@ export const getAllPosts = query({
       })
     );
 
+    postsWithCounts.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
     return postsWithCounts;
   },
 });
