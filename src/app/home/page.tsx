@@ -11,6 +11,7 @@ import { RightSidebar } from "./_components/RightSidebar";
 import { UsernameSetupDialog } from "./_components/UsernameSetupDialog";
 import { PostCard } from "@/components/PostCard";
 import Loading from "./_components/loading";
+import { CreatePost } from "./_components/CreatePost";
 
 export default function HomePage() {
   const myProfile = useQuery(api.userProfiles.getMyProfile);
@@ -38,7 +39,9 @@ export default function HomePage() {
               </p>
             </section>
 
-            {/* Posts Feed */}
+            {/* Create Post Composer */}
+            {myProfile?.username && <CreatePost />}
+
             {posts === undefined ? (
               <Loading />
             ) : posts.length === 0 ? (
@@ -75,7 +78,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Right Sidebar - Desktop Only */}
         <aside className="hidden lg:block w-80 border-l h-full">
           <RightSidebar />
         </aside>
