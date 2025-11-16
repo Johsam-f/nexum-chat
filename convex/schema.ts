@@ -5,6 +5,7 @@ export default defineSchema({
   
   userProfiles: defineTable({
     userId: v.string(),
+    avatar: v.optional(v.string()),
     username: v.string(),
     bio: v.optional(v.string()), 
     website: v.optional(v.string()), 
@@ -100,7 +101,8 @@ export default defineSchema({
   posts: defineTable({
     userId: v.string(), 
     content: v.string(), 
-    image: v.optional(v.string()), 
+    image: v.optional(v.string()), // Cloudinary URL
+    imagePublicId: v.optional(v.string()), // Cloudinary public ID for deletion
     createdAt: v.number(), 
     updatedAt: v.optional(v.number()),
     isDeleted: v.optional(v.boolean()),
