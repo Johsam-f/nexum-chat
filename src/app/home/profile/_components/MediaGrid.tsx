@@ -36,13 +36,13 @@ export function MediaGrid({ userId }: MediaGridProps) {
       {mediaPosts.map((post) => (
         <div
           key={post._id}
-          className="aspect-square overflow-hidden rounded-lg border hover:opacity-75 transition-opacity cursor-pointer"
+          className="aspect-square overflow-hidden rounded-lg border hover:opacity-75 transition-opacity cursor-pointer relative"
         >
           <Image
             src={post.image!}
             alt="Media"
-            className="w-full h-full object-cover"
-            layout="fill"
+            fill
+            className="object-contain"
           />
         </div>
       ))}
