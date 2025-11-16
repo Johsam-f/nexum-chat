@@ -69,10 +69,10 @@ export const updateProfile = mutation({
           updatedAt: Date.now(),
         });
       } else {
-        // Create new profile with username
         await ctx.db.insert("userProfiles", {
           userId: currentUser._id,
           username: normalizedUsername,
+          avatar: (currentUser as { image?: string }).image || undefined,
           ...args,
           createdAt: Date.now(),
         });
@@ -371,10 +371,10 @@ export const initializeProfile = mutation({
       throw new Error("Username is already taken");
     }
 
-    // Create profile
     await ctx.db.insert("userProfiles", {
       userId: currentUser._id,
       username: normalizedUsername,
+      avatar: (currentUser as { image?: string }).image || undefined,
       createdAt: Date.now(),
     });
 
