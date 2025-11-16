@@ -62,6 +62,7 @@ export const createPost = mutation({
   args: {
     content: v.string(),
     imageUrl: v.optional(v.string()),
+    imagePublicId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const currentUser = await authComponent.getAuthUser(ctx);
@@ -71,6 +72,7 @@ export const createPost = mutation({
       userId: currentUser._id,
       content: args.content,
       image: args.imageUrl ? args.imageUrl : undefined,
+      imagePublicId: args.imagePublicId ? args.imagePublicId : undefined,
       createdAt: Date.now(),
     });
 
@@ -91,7 +93,21 @@ export const deletePost = mutation({
     if (!post) throw new Error("Post not found");
     if (post.userId !== currentUser._id) throw new Error("Not authorized to delete this post");
 
-    // Delete all likes on this post
+    // Delete image from Cloudinary if it exists
+    if (post.imagePublicId) {
+      try {
+        const siteUrl = process.env.SITE_URL || "http://localhost:3000";
+        await fetch(`${siteUrl}/api/cloudinary/delete`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ publicId: post.imagePublicId }),
+        });
+      } catch (error) {
+        console.error("Failed to delete image from Cloudinary:", error);
+      }
+    }
+
+    // Delete all likes
     const likes = await ctx.db
       .query("likes")
       .withIndex("by_post", (q) => q.eq("postId", args.postId))
@@ -99,7 +115,7 @@ export const deletePost = mutation({
     
     await Promise.all(likes.map((like) => ctx.db.delete(like._id)));
 
-    // Delete all comments on this post
+    // Delete all comments
     const comments = await ctx.db
       .query("comments")
       .withIndex("by_post", (q) => q.eq("postId", args.postId))
@@ -107,9 +123,7 @@ export const deletePost = mutation({
     
     await Promise.all(comments.map((comment) => ctx.db.delete(comment._id)));
 
-    // Finally, delete the post itself
     await ctx.db.delete(args.postId);
-    
     return { success: true };
   },
 });
