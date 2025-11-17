@@ -110,15 +110,17 @@ export default function ChatRoomPage() {
         onBack={() => router.push("/home/messages")} 
       />
 
-      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
-        {conversation.map((message) => (
-          <MessageBubble
-            key={message._id}
-            message={message}
-            isFromCurrentUser={message.senderId === currentUserId}
-          />
-        ))}
-      </ScrollArea>
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea ref={scrollAreaRef} className="h-full p-4">
+          {conversation.map((message) => (
+            <MessageBubble
+              key={message._id}
+              message={message}
+              isFromCurrentUser={message.senderId === currentUserId}
+            />
+          ))}
+        </ScrollArea>
+      </div>
 
       <MessageInput
         value={newMessage}
