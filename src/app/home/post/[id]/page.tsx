@@ -88,9 +88,12 @@ export default function PostDetailPage() {
               </Button>
             </div>
 
-            {/* Post */}
             <div className="px-4 pt-4">
               <PostCard post={post} showAuthor={true} />
+            </div>            
+
+            <div className="bg-background border-t mt-4">
+              <CommentForm postId={postId as Id<"posts">} />
             </div>
 
             <Separator className="my-4" />
@@ -115,10 +118,7 @@ export default function PostDetailPage() {
                 </div>
               )}
             </div>
-
-            <div className="sticky bottom-0 bg-background">
-              <CommentForm postId={postId as Id<"posts">} />
-            </div>
+          
           </div>
         </div>
       </ScrollArea>
