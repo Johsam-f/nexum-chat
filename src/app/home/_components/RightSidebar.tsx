@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageSquarePlus, Users, UserPlus, Sparkles } from "lucide-react";
+import { NewMessageDialog } from "../messages/_components/NewMessageDialog";
+import { useState } from "react";
 
 // Placeholder data - will be replaced with real Convex queries later
 const onlineFriends = [
@@ -15,6 +17,8 @@ const onlineFriends = [
 ];
 
 export function RightSidebar() {
+  const [showNewMessageDialog, setShowNewMessageDialog] = useState(false);
+
   return (
     <ScrollArea className="h-full">
       <div className="space-y-4 p-4">
@@ -25,7 +29,12 @@ export function RightSidebar() {
             <CardDescription>Start something new</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Button variant="outline" className="w-full justify-start" size="sm">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start" 
+              size="sm"
+              onClick={() => setShowNewMessageDialog(true)}
+            >
               <MessageSquarePlus className="mr-2 h-4 w-4" />
               Start New Chat
             </Button>
@@ -85,6 +94,12 @@ export function RightSidebar() {
           </CardContent>
         </Card>
       </div>
+
+      {/* New Message Dialog */}
+      <NewMessageDialog
+        open={showNewMessageDialog}
+        onOpenChange={setShowNewMessageDialog}
+      />
     </ScrollArea>
   );
 }
