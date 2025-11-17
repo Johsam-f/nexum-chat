@@ -461,3 +461,24 @@ export const getLikedPostsByUser = query({
     return posts.filter((post): post is NonNullable<typeof post> => post !== null);
   },
 });
+
+// Get all users (for messaging)
+export const getAllUsers = query({
+  args: {},
+  handler: async (ctx) => {
+    const currentUser = await authComponent.getAuthUser(ctx);
+    if (!currentUser) return [];
+
+    const profiles = await ctx.db
+      .query("userProfiles")
+      .filter((q) => q.neq(q.field("userId"), currentUser._id))
+      .collect();
+
+    return profiles.map((profile) => ({
+      userId: profile.userId,
+      username: profile.username,
+      avatar: profile.avatar,
+      bio: profile.bio,
+    }));
+  },
+});
