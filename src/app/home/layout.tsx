@@ -1,13 +1,12 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { redirect } from "next/navigation"
-import { cookies } from "next/headers"
+import { getToken } from "@/lib/auth-server"
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-    const cookieStore = await cookies()
-    const session = cookieStore.get('better-auth.session_token')
+    const token = await getToken()
     
-    if (!session) {
+    if (!token) {
         redirect('/login');
     }
     
