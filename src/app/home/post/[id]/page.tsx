@@ -73,7 +73,7 @@ export default function PostDetailPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)]">
       <ScrollArea className="flex-1">
-        <div className="flex justify-center">
+        <div className="flex justify-center pb-8">
           <div className="w-full max-w-2xl">
             {/* Back Button */}
             <div className="sticky top-0 z-10 bg-background border-b p-4">
@@ -111,7 +111,7 @@ export default function PostDetailPage() {
                   </p>
                 </Card>
               ) : (
-                <div className="space-y-1 mb-4">
+                <div className="space-y-4">
                   {comments.map((comment) => (
                     <CommentCard key={comment._id} comment={comment} />
                   ))}
