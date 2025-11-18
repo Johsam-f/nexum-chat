@@ -69,6 +69,7 @@ export const updateProfile = mutation({
           updatedAt: Date.now(),
         });
       } else {
+        // New user profile being created
         await ctx.db.insert("userProfiles", {
           userId: currentUser._id,
           username: normalizedUsername,
@@ -76,6 +77,28 @@ export const updateProfile = mutation({
           ...args,
           createdAt: Date.now(),
         });
+
+        // Add user to default "Nexum Chat" group
+        try {
+          const defaultGroup = await ctx.db
+            .query("systemGroups")
+            .withIndex("by_type", (q) => q.eq("type", "default"))
+            .filter((q) => q.eq(q.field("isActive"), true))
+            .first();
+
+          if (defaultGroup) {
+            await ctx.db.insert("groupMembers", {
+              groupId: defaultGroup.groupId,
+              userId: currentUser._id,
+              role: "member",
+              joinedAt: Date.now(),
+              isActive: true,
+            });
+          }
+        } catch (error) {
+          // Don't fail user creation if default group join fails
+          console.error("Failed to add user to default group:", error);
+        }
       }
     } else if (existingProfile) {
       // Update other profile fields without changing username
