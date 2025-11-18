@@ -466,6 +466,14 @@ export const getLikedPostsByUser = query({
     userId: v.string(),
   },
   handler: async (ctx, args) => {
+    // Get current user (optional)
+    let currentUser;
+    try {
+      currentUser = await authComponent.getAuthUser(ctx);
+    } catch {
+      currentUser = null;
+    }
+
     const likes = await ctx.db
       .query("likes")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
@@ -480,8 +488,38 @@ export const getLikedPostsByUser = query({
       })
     );
 
-    // Filter out null posts 
-    return posts.filter((post): post is NonNullable<typeof post> => post !== null);
+    // Filter out null posts
+    const validPosts = posts.filter((post): post is NonNullable<typeof post> => post !== null);
+
+    // Add like and comment counts for each post
+    const postsWithCounts = await Promise.all(
+      validPosts.map(async (post) => {
+        const postLikes = await ctx.db
+          .query("likes")
+          .withIndex("by_post", (q) => q.eq("postId", post._id))
+          .collect();
+
+        const comments = await ctx.db
+          .query("comments")
+          .withIndex("by_post", (q) => q.eq("postId", post._id))
+          .collect();
+
+        // Check if current user liked this post
+        const isLikedByCurrentUser = currentUser
+          ? postLikes.some((like) => like.userId === currentUser._id)
+          : false;
+
+        return {
+          ...post,
+          likeCount: postLikes.length,
+          commentCount: comments.length,
+          isLikedByCurrentUser,
+        };
+      })
+    );
+
+    postsWithCounts.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+    return postsWithCounts;
   },
 });
 
