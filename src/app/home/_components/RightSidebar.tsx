@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageSquarePlus, Users, UserPlus, Sparkles } from "lucide-react";
+import { MessageSquarePlus, Users, Sparkles } from "lucide-react";
 import { NewMessageDialog } from "../messages/_components/NewMessageDialog";
+import { NewGroupDialog } from "../groups/_components/NewGroupDialog";
 import { useState } from "react";
 
 // Placeholder data - will be replaced with real Convex queries later
@@ -18,6 +19,7 @@ const onlineFriends = [
 
 export function RightSidebar() {
   const [showNewMessageDialog, setShowNewMessageDialog] = useState(false);
+  const [showNewGroupDialog, setShowNewGroupDialog] = useState(false);
 
   return (
     <ScrollArea className="h-full">
@@ -38,13 +40,14 @@ export function RightSidebar() {
               <MessageSquarePlus className="mr-2 h-4 w-4" />
               Start New Chat
             </Button>
-            <Button variant="outline" className="w-full justify-start" size="sm">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start" 
+              size="sm"
+              onClick={() => setShowNewGroupDialog(true)}
+            >
               <Users className="mr-2 h-4 w-4" />
               Create Group
-            </Button>
-            <Button variant="outline" className="w-full justify-start" size="sm">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Invite Friends
             </Button>
           </CardContent>
         </Card>
@@ -52,8 +55,11 @@ export function RightSidebar() {
         {/* Online Friends */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Online Friends</CardTitle>
-            <CardDescription>{onlineFriends.length} online</CardDescription>
+            <CardTitle className="text-lg">Online Friends </CardTitle>
+            <CardDescription>
+              <p className="text-sm text-red-400">Online viewing functionality coming soon!!!!!</p>
+              {onlineFriends.length} online
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -95,10 +101,14 @@ export function RightSidebar() {
         </Card>
       </div>
 
-      {/* New Message Dialog */}
       <NewMessageDialog
         open={showNewMessageDialog}
         onOpenChange={setShowNewMessageDialog}
+      />
+
+      <NewGroupDialog
+        open={showNewGroupDialog}
+        onOpenChange={setShowNewGroupDialog}
       />
     </ScrollArea>
   );
