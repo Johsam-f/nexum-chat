@@ -11,6 +11,8 @@
 import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as comments from "../comments.js";
+import type * as groupMessages from "../groupMessages.js";
+import type * as groups from "../groups.js";
 import type * as http from "../http.js";
 import type * as messages from "../messages.js";
 import type * as posts from "../posts.js";
@@ -35,6 +37,8 @@ declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   auth: typeof auth;
   comments: typeof comments;
+  groupMessages: typeof groupMessages;
+  groups: typeof groups;
   http: typeof http;
   messages: typeof messages;
   posts: typeof posts;
