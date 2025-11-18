@@ -262,4 +262,13 @@ export default defineSchema({
     .index("by_conversation", ["conversationId"])
     .index("by_group", ["groupId"])
     .index("by_expires", ["expiresAt"]),
+
+  systemGroups: defineTable({
+    groupId: v.id("groups"),
+    type: v.union(v.literal("default"), v.literal("announcements")),
+    isActive: v.boolean(),
+    createdAt: v.number(),
+  })
+    .index("by_type", ["type"])
+    .index("by_group", ["groupId"]),
 });
