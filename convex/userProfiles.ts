@@ -505,3 +505,33 @@ export const getAllUsers = query({
     }));
   },
 });
+
+// Get user stats
+export const getUserStats = query({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const posts = await ctx.db
+      .query("posts")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.neq(q.field("isDeleted"), true))
+      .collect();
+    
+    const followers = await ctx.db
+      .query("follows")
+      .withIndex("by_following", (q) => q.eq("followingId", args.userId))
+      .collect();
+    
+    const following = await ctx.db
+      .query("follows")
+      .withIndex("by_follower", (q) => q.eq("followerId", args.userId))
+      .collect();
+    
+    return {
+      postsCount: posts.length,
+      followersCount: followers.length,
+      followingCount: following.length,
+    };
+  },
+});

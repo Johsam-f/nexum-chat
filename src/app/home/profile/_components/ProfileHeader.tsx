@@ -26,6 +26,9 @@ interface ProfileHeaderProps {
 export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const profileDetails = useQuery(api.userProfiles.getProfileByUsername, { username: profile.username });
   
+  // Get user stats
+  const userStats = useQuery(api.userProfiles.getUserStats, { userId: profile.userId });
+  
   // get profile owner details
   const profileOwner = useQuery(api.auth.getUserById, { userId: profile.userId });
   const displayName = profileOwner?.name || profile.username;
@@ -145,15 +148,15 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
       {/* Stats */}
       <div className="flex gap-6 mt-6 pt-6 border-t">
         <div className="text-center">
-          <div className="text-2xl font-bold">0</div>
+          <div className="text-2xl font-bold">{userStats?.postsCount ?? 0}</div>
           <div className="text-sm text-muted-foreground">Posts</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold">0</div>
+          <div className="text-2xl font-bold">{userStats?.followersCount ?? 0}</div>
           <div className="text-sm text-muted-foreground">Followers</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold">0</div>
+          <div className="text-2xl font-bold">{userStats?.followingCount ?? 0}</div>
           <div className="text-sm text-muted-foreground">Following</div>
         </div>
       </div>
