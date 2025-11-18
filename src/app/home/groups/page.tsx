@@ -6,18 +6,19 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyGroups } from "./_components/EmptyGroups";
+import { GroupCard } from "./_components/GroupCard";
+import { NewGroupDialog } from "./_components/NewGroupDialog";
+import { useState } from "react";
 
 export default function GroupsPage() {
-  // TODO: Create getMyGroups query in Convex
-  const groups = useQuery(api.posts.getAllPosts); // Placeholder - will replace with actual groups query
+  const groups = useQuery(api.groups.getMyGroups);
   const isLoading = groups === undefined;
+  const [showNewGroupDialog, setShowNewGroupDialog] = useState(false);
 
   const handleCreateGroup = () => {
-    // TODO: Implement group creation functionality
-    console.log("Create group clicked");
+    setShowNewGroupDialog(true);
   };
 
   return (
@@ -39,37 +40,32 @@ export default function GroupsPage() {
       {/* Groups List */}
       {isLoading ? (
         <div className="space-y-4">
-          <Card className="p-6">
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-16 w-16 rounded-lg" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-5 w-1/3" />
-                <Skeleton className="h-4 w-1/2" />
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="border rounded-lg p-6">
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-16 w-16 rounded-lg" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-5 w-1/3" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
               </div>
             </div>
-          </Card>
-          <Card className="p-6">
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-16 w-16 rounded-lg" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-5 w-1/3" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-            </div>
-          </Card>
+          ))}
         </div>
       ) : groups && groups.length === 0 ? (
         <EmptyGroups onCreateGroup={handleCreateGroup} />
       ) : (
         <div className="space-y-4">
-          {/* TODO: Map through actual groups when backend is ready */}
-          <Card className="p-6">
-            <p className="text-muted-foreground text-center">
-              Groups functionality coming soon...
-            </p>
-          </Card>
+          {groups?.map((group) => (
+            <GroupCard key={group._id} group={group} />
+          ))}
         </div>
       )}
+
+      <NewGroupDialog
+        open={showNewGroupDialog}
+        onOpenChange={setShowNewGroupDialog}
+      />
     </div>
   );
 }
