@@ -46,10 +46,10 @@ export function ConversationCard({
     <Card
       className={`p-4 cursor-pointer transition-colors hover:bg-accent ${
         hasUnread ? "bg-accent/50" : ""
-      }`}
+      } w-full max-w-full overflow-hidden`}
       onClick={handleClick}
     >
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-3 w-full max-w-full">
         {/* Avatar */}
         <Avatar className="h-12 w-12">
           <AvatarImage src={conversation.otherUser.avatar} />
@@ -59,9 +59,9 @@ export function ConversationCard({
         </Avatar>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 max-w-full overflow-hidden">
           {/* Username and Time */}
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center justify-between mb-1 gap-2">
             <h3
               className={`font-semibold truncate ${
                 hasUnread ? "text-foreground" : "text-foreground/90"

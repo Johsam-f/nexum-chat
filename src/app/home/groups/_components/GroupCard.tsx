@@ -25,13 +25,13 @@ export function GroupCard({ group }: GroupCardProps) {
   const hasUnread = group.unreadCount > 0;
 
   return (
-    <Link href={`/home/groups/${group._id}`} className="block">
+    <Link href={`/home/groups/${group._id}`} className="block w-full max-w-full">
       <Card
         className={`p-4 hover:bg-accent/50 transition-colors cursor-pointer ${
           hasUnread ? "bg-accent/30" : ""
-        }`}
+        } w-full max-w-full overflow-hidden`}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full max-w-full">
           <Avatar className="h-14 w-14">
             <AvatarImage src={group.avatar} />
             <AvatarFallback className="bg-primary text-primary-foreground text-xl">
@@ -39,9 +39,9 @@ export function GroupCard({ group }: GroupCardProps) {
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
+          <div className="flex-1 min-w-0 max-w-full overflow-hidden">
+            <div className="flex items-center justify-between gap-2 w-full">
+              <div className="flex items-center gap-2 min-w-0 max-w-full">
                 <h3 className="font-semibold truncate">{group.name}</h3>
                 {group.userRole === "admin" && (
                   <Badge variant="secondary" className="text-xs">
