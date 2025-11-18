@@ -59,7 +59,7 @@ export function GroupCard({ group }: GroupCardProps) {
             </div>
 
             {group.lastMessage && (
-              <p className={`text-sm text-muted-foreground truncate mt-1 ${hasUnread ? "font-semibold text-white" : ""}`}>
+              <p className={`text-sm text-muted-foreground truncate mt-1 ${hasUnread ? "font-semibold text-black dark:text-white" : ""}`}>
                 {group.lastMessage.content}
               </p>
             )}

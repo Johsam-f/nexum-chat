@@ -92,7 +92,7 @@ export function ConversationCard({
                   {isLastMessageFromMe && (
                     <span className="text-muted-foreground">You: </span>
                   )}
-                  {conversation.lastMessage.content}
+                  { <span className={`${hasUnread ? "font-semibold text-black dark:text-white" : ""}`}>{conversation.lastMessage.content}</span> }
                 </>
               ) : (
                 <span className="italic">Start a conversation</span>
