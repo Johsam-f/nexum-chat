@@ -42,53 +42,76 @@ export const getMyRole = query({
   },
 });
 
-// Initialize admin 
-// export const initializeAdmin = mutation({
-//   args: {
-//     secretKey: v.string(), 
-//   },
-//   handler: async (ctx, args) => {
-//     // IMPORTANT: Change this secret key to something only you know
-//     const ADMIN_SECRET = process.env.ADMIN_SETUP_SECRET || "change-this-secret-key-in-production";
+// Initialize admin - Use this ONCE after deployment to make yourself admin
+export const initializeAdmin = mutation({
+  args: {
+    secretKey: v.string(), 
+  },
+  handler: async (ctx, args) => {
+    // IMPORTANT: Set ADMIN_SETUP_SECRET in Convex environment variables
+    const ADMIN_SECRET = process.env.ADMIN_SETUP_SECRET;
     
-//     if (args.secretKey !== ADMIN_SECRET) {
-//       throw new Error("Invalid secret key");
-//     }
+    if (!ADMIN_SECRET) {
+      throw new Error("ADMIN_SETUP_SECRET not configured in Convex environment");
+    }
+    
+    if (args.secretKey !== ADMIN_SECRET) {
+      throw new Error("Invalid secret key");
+    }
 
-//     // Get current authenticated user
-//     const currentUser = await authComponent.getAuthUser(ctx);
-//     if (!currentUser) {
-//       throw new Error("You must be logged in to initialize admin");
-//     }
+    // Get current authenticated user
+    const currentUser = await authComponent.getAuthUser(ctx);
+    if (!currentUser) {
+      throw new Error("You must be logged in to initialize admin");
+    }
 
-//     // Check if user already has a role
-//     const existingRole = await ctx.db
-//       .query("userRoles")
-//       .withIndex("by_user", (q) => q.eq("userId", currentUser._id))
-//       .first();
+    // Check if any admin already exists (prevent multiple admins via this method)
+    const existingAdmin = await ctx.db
+      .query("userRoles")
+      .withIndex("by_role", (q) => q.eq("role", "admin"))
+      .first();
 
-//     if (existingRole) {
-//       // Update to admin if not already
-//       if (existingRole.role !== "admin") {
-//         await ctx.db.patch(existingRole._id, {
-//           role: "admin",
-//           updatedAt: Date.now(),
-//         });
-//         return { message: "User upgraded to admin", userId: currentUser._id };
-//       }
-//       return { message: "User is already admin", userId: currentUser._id };
-//     }
+    if (existingAdmin) {
+      throw new Error("An admin already exists. Use the grantRole function instead.");
+    }
 
-//     // Create admin role
-//     await ctx.db.insert("userRoles", {
-//       userId: currentUser._id,
-//       role: "admin",
-//       grantedAt: Date.now(),
-//     });
+    // Check if user already has a role
+    const existingRole = await ctx.db
+      .query("userRoles")
+      .withIndex("by_user", (q) => q.eq("userId", currentUser._id))
+      .first();
 
-//     return { message: "Admin role granted successfully", userId: currentUser._id };
-//   },
-// });
+    if (existingRole) {
+      // Update to admin
+      await ctx.db.patch(existingRole._id, {
+        role: "admin",
+        grantedBy: "system_init",
+        updatedAt: Date.now(),
+      });
+      return { 
+        success: true,
+        message: "User upgraded to admin", 
+        userId: currentUser._id,
+        email: currentUser.email,
+      };
+    }
+
+    // Create admin role
+    await ctx.db.insert("userRoles", {
+      userId: currentUser._id,
+      role: "admin",
+      grantedBy: "system_init",
+      grantedAt: Date.now(),
+    });
+
+    return { 
+      success: true,
+      message: "Admin role granted successfully", 
+      userId: currentUser._id,
+      email: currentUser.email,
+    };
+  },
+});
 
 // Grant role to a user (admin only)
 export const grantRole = mutation({
