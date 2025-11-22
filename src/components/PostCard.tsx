@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -165,7 +166,10 @@ export function PostCard({ post, showAuthor = true, onDelete }: PostCardProps) {
           className={post.isLikedByCurrentUser ? "text-red-500 hover:text-red-600" : ""}
         >
           <Heart
-            className={`h-4 w-4 mr-2 ${post.isLikedByCurrentUser ? "fill-current" : ""}`}
+            className={cn(
+              "h-4 w-4 mr-2",
+              post.isLikedByCurrentUser && "fill-current"
+            )}
           />
           <span className="text-sm">{post.likeCount || 0}</span>
         </Button>

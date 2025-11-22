@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface GroupCardProps {
   group: {
@@ -27,9 +28,10 @@ export function GroupCard({ group }: GroupCardProps) {
   return (
     <Link href={`/home/groups/${group._id}`} className="block w-full max-w-full">
       <Card
-        className={`p-4 hover:bg-accent/50 transition-colors cursor-pointer ${
-          hasUnread ? "bg-accent/30" : ""
-        } w-full max-w-full overflow-hidden`}
+        className={cn(
+          "p-4 hover:bg-accent/50 transition-colors cursor-pointer w-full max-w-full overflow-hidden",
+          hasUnread && "bg-accent/30"
+        )}
       >
         <div className="flex items-center gap-4 w-full max-w-full">
           <Avatar className="h-14 w-14">
@@ -59,7 +61,10 @@ export function GroupCard({ group }: GroupCardProps) {
             </div>
 
             {group.lastMessage && (
-              <p className={`text-sm text-muted-foreground truncate mt-1 ${hasUnread ? "font-semibold text-black dark:text-white" : ""}`}>
+              <p className={cn(
+                "text-sm text-muted-foreground truncate mt-1",
+                hasUnread && "font-semibold text-black dark:text-white"
+              )}>
                 {group.lastMessage.content}
               </p>
             )}

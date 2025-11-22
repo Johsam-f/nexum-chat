@@ -45,7 +45,7 @@ export function DangerZone() {
           </Button>
         </div>
         <p className="text-sm text-muted-foreground">
-          Account deleting functionality is not yet implemented. you are stuck with us 😂
+          Account deleting functionality is not yet implemented.
         </p>
       </CardContent>
     </Card>

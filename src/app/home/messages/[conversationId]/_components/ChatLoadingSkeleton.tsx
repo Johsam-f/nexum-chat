@@ -1,4 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export function ChatLoadingSkeleton() {
   return (
@@ -17,7 +18,10 @@ export function ChatLoadingSkeleton() {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className={`flex gap-2 ${i % 2 === 0 ? "flex-row-reverse" : ""}`}
+            className={cn(
+              "flex gap-2",
+              i % 2 === 0 && "flex-row-reverse"
+            )}
           >
             <Skeleton className="h-8 w-8 rounded-full shrink-0" />
             <div className="space-y-2">

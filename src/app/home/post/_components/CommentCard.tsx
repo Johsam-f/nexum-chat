@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useQuery, useMutation } from "convex/react";
@@ -77,16 +78,16 @@ export function CommentCard({ comment }: CommentCardProps) {
             size="sm"
             onClick={handleLikeToggle}
             disabled={!currentUser}
-            className={`h-7 px-2 ${
-              comment.isLikedByCurrentUser
-                ? "text-red-500 hover:text-red-600"
-                : ""
-            }`}
+            className={cn(
+              "h-7 px-2",
+              comment.isLikedByCurrentUser && "text-red-500 hover:text-red-600"
+            )}
           >
             <Heart
-              className={`h-3 w-3 mr-1 ${
-                comment.isLikedByCurrentUser ? "fill-current" : ""
-              }`}
+              className={cn(
+                "h-3 w-3 mr-1",
+                comment.isLikedByCurrentUser && "fill-current"
+              )}
             />
             <span className="text-xs">{comment.likeCount || 0}</span>
           </Button>

@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Id } from "../../../../../convex/_generated/dataModel";
+import { cn } from "@/lib/utils";
 
 interface ConversationCardProps {
   conversation: {
@@ -44,14 +45,15 @@ export function ConversationCard({
 
   return (
     <Card
-      className={`p-4 cursor-pointer transition-colors hover:bg-accent ${
-        hasUnread ? "bg-accent/50" : ""
-      } w-full max-w-full overflow-hidden`}
+      className={cn(
+        "p-4 cursor-pointer transition-colors hover:bg-accent w-full max-w-full overflow-hidden",
+        hasUnread && "bg-accent/50"
+      )}
       onClick={handleClick}
     >
       <div className="flex items-start gap-3 w-full max-w-full">
         {/* Avatar */}
-        <Avatar className="h-12 w-12">
+        <Avatar className="h-12 w-12 shrink-0">
           <AvatarImage src={conversation.otherUser.avatar} />
           <AvatarFallback>
             {conversation.otherUser.username[0].toUpperCase()}
@@ -63,9 +65,10 @@ export function ConversationCard({
           {/* Username and Time */}
           <div className="flex items-center justify-between mb-1 gap-2">
             <h3
-              className={`font-semibold truncate ${
+              className={cn(
+                "font-semibold truncate",
                 hasUnread ? "text-foreground" : "text-foreground/90"
-              }`}
+              )}
             >
               {conversation.otherUser.username}
             </h3>
@@ -81,18 +84,19 @@ export function ConversationCard({
           {/* Last Message */}
           <div className="flex items-center justify-between gap-2">
             <p
-              className={`text-sm truncate ${
-                hasUnread
-                  ? "font-medium text-foreground"
-                  : "text-muted-foreground"
-              }`}
+              className={cn(
+                "text-sm truncate",
+                hasUnread ? "font-medium text-foreground" : "text-muted-foreground"
+              )}
             >
               {conversation.lastMessage ? (
                 <>
                   {isLastMessageFromMe && (
                     <span className="text-muted-foreground">You: </span>
                   )}
-                  { <span className={`${hasUnread ? "font-semibold text-black dark:text-white" : ""}`}>{conversation.lastMessage.content}</span> }
+                  <span className={cn(hasUnread && "font-semibold text-black dark:text-white")}>
+                    {conversation.lastMessage.content}
+                  </span>
                 </>
               ) : (
                 <span className="italic">Start a conversation</span>

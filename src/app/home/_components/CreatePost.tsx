@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 import {
   Collapsible,
   CollapsibleContent,
@@ -182,13 +183,14 @@ export function CreatePost() {
 
               <section className="flex items-center gap-3">
                 <span
-                  className={`text-sm ${
+                  className={cn(
+                    "text-sm",
                     isOverLimit
                       ? "text-destructive font-semibold"
                       : characterCount > MAX_CHARACTERS * 0.9
                       ? "text-amber-500"
                       : "text-muted-foreground"
-                  }`}
+                  )}
                 >
                   {characterCount}/{MAX_CHARACTERS}
                 </span>
